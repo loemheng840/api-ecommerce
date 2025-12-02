@@ -1,5 +1,5 @@
 import { Schema, model, Document } from "mongoose";
-import { PRODUCT_CATEGORY  } from "../utils/prodcuctCategory.enum";
+import { PRODUCT_CATEGORY } from "../utils/prodcuctCategory.enum";
 
 export interface IProduct extends Document {
   name: string;
