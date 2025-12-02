@@ -3,7 +3,7 @@ const router = Router();
 import UserController from "../controller/user.controller";
 import { validate } from "../middleware/validate";
 import { registerUser, updateUser } from "../middleware/user.middleware";
-import { verifyToken } from "../middleware/middleware";
+import { authorization, verifyToken } from "../middleware/middleware";
 
 /**
  * @swagger
@@ -81,6 +81,77 @@ router.put(
   validate(updateUser),
   verifyToken,
   UserController.updateUser
+);
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     tags: [Users]
+ *     summary: Delete user by ID (Admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     description: Permanently delete a user account. Only accessible by administrators.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID to delete
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User deleted successfully
+ *       401:
+ *         description: Unauthorized - No token provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden - Admin access required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Access denied. Required role admin
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: User not found
+ */
+router.delete(
+  "/:id",
+  verifyToken,
+  authorization("admin"),
+  UserController.deleteUser
 );
 
 export default router;

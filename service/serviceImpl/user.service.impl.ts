@@ -4,6 +4,39 @@ import { UserService } from "../user.service";
 import userRepository from "../../repository/repositoryImpl/user.repository.impl";
 
 class UserServiceImpl implements UserService {
+  async deleteUser(req: Request, res: Response): Promise<Response | void> {
+    try {
+      // Get user ID from token (set by authMiddleware)
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          error: "Not authenticated",
+        });
+      }
+
+      // Delete user
+      const user = await userRepository.deleteById(userId);
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, error: "User not found" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+      });
+    } catch (error: unknown) {
+      console.error("Error deleting user:", error);
+      return res.status(400).json({
+        success: false,
+        error: error instanceof Error ? error.message : "An error occurred",
+      });
+    }
+  }
   async createUser(req: Request, res: Response): Promise<Response | void> {
     try {
       const hashedPassword = await hash(req.body.password, 10);

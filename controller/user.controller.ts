@@ -9,7 +9,12 @@ async function updateUser(req: Request, res: Response) {
   return UserService.updateUser(req, res);
 }
 
+async function deleteUser(req: Request, res: Response) {
+  return UserService.deleteUser(req, res);
+}
+
 export default {
   getUserById,
   updateUser,
+  deleteUser,
 };
