@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import UserController from "../controller/user.controller";
 import { validate } from "../middleware/validate";
-import { registerUser, updateUser } from "../middleware/user.middleware";
+import { updateUser } from "../middleware/user.middleware";
 import { authorization, verifyToken } from "../middleware/middleware";
 
 /**
@@ -33,7 +33,7 @@ import { authorization, verifyToken } from "../middleware/middleware";
  *       404:
  *         description: User not found
  */
-router.get("/:id", validate(registerUser), UserController.getUserById);
+router.get("/:id", verifyToken, authorization("user", "admin"), UserController.getUserById);
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ router.get("/:id", validate(registerUser), UserController.getUserById);
  *         description: User not found
  */
 router.put(
-  "/user",
+  "",
   validate(updateUser),
   verifyToken,
   UserController.updateUser

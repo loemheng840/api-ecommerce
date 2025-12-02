@@ -1,6 +1,8 @@
 import { Router } from "express";
 import orderController from "../controller/order.controller";
 import { authorization, verifyToken } from "../middleware/middleware";
+import { validate } from "../middleware/validate";
+import { createOrderSchema } from "../middleware/order.middleware";
 
 const router = Router();
 
@@ -59,6 +61,7 @@ router.post(
   "",
   verifyToken,
   authorization("user", "admin"),
+  validate(createOrderSchema),
   orderController.createOrder
 );
 
