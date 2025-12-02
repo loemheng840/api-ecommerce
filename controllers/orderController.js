@@ -1,12 +1,10 @@
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Product = require("../models/Product");
-
 // Create Order
 exports.createOrder = async (req, res) => {
   try {
     const { userId, products, shippingAddress } = req.body;
-
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
