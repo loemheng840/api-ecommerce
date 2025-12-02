@@ -1,7 +1,9 @@
 require("dotenv").config();
 import express from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import connectDB from "./config/db";
+import { swaggerSpec } from "./config/swagger";
 import productRoutes from "./routes/product.routes";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
@@ -22,6 +24,16 @@ app.use(cors(corsOptions));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Swagger UI
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "E-Commerce API Documentation",
+  })
+);
 
 // Connect to MongoDB
 connectDB();
